@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL:         '/api',
+  baseURL:         import.meta.env.VITE_API_URL || '/api',
   withCredentials: true,   // send httpOnly cookie on every request
 });
 
@@ -44,7 +44,8 @@ api.interceptors.response.use(
 
       try {
         // Call refresh — refresh token is in httpOnly cookie automatically
-        const res   = await axios.post('/api/auth/refresh', {}, { withCredentials: true });
+        const baseUrl = import.meta.env.VITE_API_URL || '';
+        const res   = await axios.post(`${baseUrl}/api/auth/refresh`, {}, { withCredentials: true });
         const token = res.data.data.accessToken;
         sessionStorage.setItem('accessToken', token);
         api.defaults.headers.common.Authorization = `Bearer ${token}`;
