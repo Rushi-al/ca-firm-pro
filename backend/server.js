@@ -23,6 +23,7 @@ app.use('/api/billing/webhook',
 
 // ── Security middleware ────────────────────────────────────
 app.use(helmet({
+  crossOriginResourcePolicy: false,
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
