@@ -124,7 +124,7 @@ mongoose.connect(process.env.MONGO_URI)
     const server = http.createServer(app);
     require('./socket').init(server);
 
-    server.listen(PORT, () => console.log(`🚀 CA Firm Pro v3.0 running on http://localhost:${PORT}`));
+    server.listen(PORT, '0.0.0.0', () => console.log(`🚀 CA Firm Pro v3.0 running on port ${PORT}`));
 
     // Start all cron jobs
     require('./services/reminder.service');       // Daily 8AM task deadline emails
