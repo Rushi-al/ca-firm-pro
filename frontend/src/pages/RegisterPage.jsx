@@ -40,7 +40,8 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
-      const res = await fetch('/api/firms/register', {
+      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const res = await fetch(`${baseUrl}/api/firms/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
