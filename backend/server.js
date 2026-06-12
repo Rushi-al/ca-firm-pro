@@ -35,6 +35,21 @@ app.use(mongoSanitize());
 app.use(xss());
 app.use(cookieParser());
 
+// ── CORS — locked to frontend domain only ─────────────────
+app.use(cors({
+  origin: function (origin, callback) {
+    const mainOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
+    if (!origin || origin === mainOrigin || origin.endsWith('.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,      // Required for cookies
+  methods:     ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],
+}));
+
 // Rate limiters
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, max: 100,
@@ -51,20 +66,7 @@ app.use('/api/firms/register',    authLimiter);
 app.use('/api/portal/login',      authLimiter);
 app.use('/api/auth/2fa/complete', authLimiter);
 
-// ── CORS — locked to frontend domain only ─────────────────
-app.use(cors({
-  origin: function (origin, callback) {
-    const mainOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
-    if (!origin || origin === mainOrigin || origin.endsWith('.vercel.app')) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,      // Required for cookies
-  methods:     ['GET','POST','PUT','DELETE','OPTIONS'],
-  allowedHeaders: ['Content-Type','Authorization'],
-}));
+
 
 app.use(express.json({ limit: '10kb' }));
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
