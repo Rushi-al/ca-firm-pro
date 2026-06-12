@@ -53,7 +53,14 @@ app.use('/api/auth/2fa/complete', authLimiter);
 
 // ── CORS — locked to frontend domain only ─────────────────
 app.use(cors({
-  origin:      process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: function (origin, callback) {
+    const mainOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
+    if (!origin || origin === mainOrigin || origin.endsWith('.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,      // Required for cookies
   methods:     ['GET','POST','PUT','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type','Authorization'],
