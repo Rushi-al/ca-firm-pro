@@ -11,6 +11,7 @@ const cookieParser  = require('cookie-parser');
 const path          = require('path');
 
 const app = express();
+app.set('trust proxy', 1); // Trust Railway's reverse proxy for rate limiting
 
 // ── Webhook raw body (must be before json parser) ──────────
 const billingRoutes = require('./routes/billing.routes');
